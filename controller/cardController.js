@@ -7,7 +7,13 @@ const findAllCards = async (req, res) => {
         for (const obj of data) {
             const newObj = {
                 _id: obj._id,
-                assets: obj.assets
+                name:obj.name,
+                assets: obj.assets,
+                regions: obj.regionRefs,
+                cost: obj.cost,
+                type: obj.type,
+                rarity: obj.rarityRef,
+                keywords: obj.keywords,
             }
             newData.push(newObj);
 
