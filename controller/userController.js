@@ -72,7 +72,25 @@ const signInUser = async (req, res) => {
   }
 };
 
+const deleteUser = async (req, res) => {
+  if (!checkBody(req.body, ['email'])) {
+    res.json({ result: false, error: 'Missing or empty fields' });
+    return;
+  }
+  try {
+    const deletetedUser = await User.deleteOne({ email: req.body.email });
+    if (deletetedUser.deletedCount > 0) {
+      return res.json({ result: true, error: 'User deleted' });
+    } else {
+      return res.json({ result: false, error: 'User not fount' });
+    }
+  } catch (error) {
+    return res.json({ result: false, error: 'impossible' });
+  }
+};
+
 module.exports = {
   registerUser,
   signInUser,
+  deleteUser,
 };
