@@ -9,6 +9,7 @@ const cors = require('cors');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
+const decksRouter = require('./routes/decks');
 
 var app = express();
 
@@ -22,5 +23,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
+app.use('/decks', decksRouter);
 
 module.exports = app;
