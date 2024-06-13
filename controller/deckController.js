@@ -23,6 +23,30 @@ const saveDeck = async (req, res) => {
   }
 };
 
+const updateDeck = async (req, res) => {
+  //todo : When used with the front delete the next line
+  req.body.cards = [{ cardCode: '06RU008', number: 3 }];
+
+  try {
+    const toUpdate = {
+      name: req.body.name,
+      cards: req.body.cards,
+      public: req.body.public,
+    };
+    await Deck.findOneAndUpdate({ id: req.body.id }, toUpdate, {
+      new: true,
+    }).then((updatedDeck) => {
+      res.json({ result: true, deck: updatedDeck, message: 'Deck updated' });
+    });
+  } catch (error) {
+    return res.json({
+      result: false,
+      message: 'Impossibme to update',
+      error: error,
+    });
+  }
+};
+
 const deleteDeck = async (req, res) => {
   try {
     const deletetedDeck = await Deck.deleteOne({ id: req.body.id });
@@ -39,4 +63,5 @@ const deleteDeck = async (req, res) => {
 module.exports = {
   saveDeck,
   deleteDeck,
+  updateDeck,
 };

@@ -72,6 +72,33 @@ const signInUser = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  const hash = bcrypt.hashSync(req.body.password, 10);
+
+  try {
+    const toUpdate = {
+      username: req.body.username,
+      email: req.body.email,
+      password: hash,
+    };
+    await User.findOneAndUpdate({ _id: req.body._id }, toUpdate, {
+      new: true,
+    }).then((updatedUser) => {
+      res.json({
+        result: true,
+        deck: updatedUser,
+        message: 'Informations updated',
+      });
+    });
+  } catch (error) {
+    return res.json({
+      result: false,
+      message: 'Impossible to update',
+      error: error,
+    });
+  }
+};
+
 const deleteUser = async (req, res) => {
   if (!checkBody(req.body, ['email'])) {
     res.json({ result: false, error: 'Missing or empty fields' });
@@ -92,5 +119,6 @@ const deleteUser = async (req, res) => {
 module.exports = {
   registerUser,
   signInUser,
+  updateUser,
   deleteUser,
 };
