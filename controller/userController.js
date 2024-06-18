@@ -6,19 +6,18 @@ const bcrypt = require('bcrypt');
 
 const registerUser = async (req, res) => {
   if (!checkBody(req.body, ['username', 'email', 'password'])) {
-    res.json({ result: false, error: 'Missing or empty fields' });
+    res.status(400).json({ error: 'Missing or empty fields' });
     return;
   }
 
   if (!validator.isEmail(req.body.email)) {
-    res.json({ result: false, error: 'This email is not valid' });
+    res.status(400).json({ error: 'This email is not valid' });
     return;
   }
 
   //can be replace by is "isStrongPassword(str [, options])" later
   if (!validator.isLength(req.body.password, { min: 3, max: 100 })) {
-    res.json({
-      result: false,
+    res.status(400).json({
       error: 'Password needs to be between 3 and 20 characters',
     });
     return;
@@ -35,40 +34,48 @@ const registerUser = async (req, res) => {
       canBookmark: true,
     });
 
-    await newUser.save().then((newDoc) => {
-      res.json({ result: true, user: newDoc });
+    await newUser.save().then((userInfo) => {
+      return res.status(201).json({
+        username: userInfo.username,
+        email: userInfo.email,
+        token: userInfo.token,
+      });
     });
   } catch (error) {
     console.log(error);
     if (error.code === 11000) {
-      return res.json({
-        result: false,
-        error: 'Username or email already exist',
-      });
+      res.status(400).json({ error: 'Username or email already exist' });
     }
-    return res.json({ result: false, error: 'Error. Cannot create user' });
+    return res.status(500).json({
+      error: 'Cannot create user, internal server error',
+    });
   }
 };
 
 const signInUser = async (req, res) => {
   if (!checkBody(req.body, ['email', 'password'])) {
-    res.json({ result: false, error: 'Missing or empty fields' });
+    res.status(400).json({ error: 'Missing or empty fields' });
     return;
   }
 
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
-      return res.json({ result: false, error: 'User not found' });
+      return res.status(404).json({ error: 'User not found' });
     }
 
     if (user && bcrypt.compareSync(req.body.password, user.password)) {
-      return res.json({ result: true, user });
+      return res.status(200).json({
+        username: user.username,
+        email: user.email,
+        token: user.token,
+      });
     }
-    return res.json({ result: false, error: 'Wrong password' });
+    return res.status(400).json({ error: 'Wrong password' });
   } catch (error) {
-    console.log(error);
-    return res.json({ result: false, error: 'Error while sign in' });
+    return res.status(500).json({
+      error: 'Cannot sign in, internal server error',
+    });
   }
 };
 
@@ -84,35 +91,38 @@ const updateUser = async (req, res) => {
     await User.findOneAndUpdate({ _id: req.body._id }, toUpdate, {
       new: true,
     }).then((updatedUser) => {
-      res.json({
-        result: true,
-        deck: updatedUser,
+      return res.status(200).json({
+        user: {
+          username: updatedUser.username,
+          email: updatedUser.email,
+          token: updatedUser.token,
+        },
         message: 'Informations updated',
       });
     });
   } catch (error) {
-    return res.json({
-      result: false,
-      message: 'Impossible to update',
-      error: error,
+    return res.status(500).json({
+      error: 'Cannot update, internal server error',
     });
   }
 };
 
 const deleteUser = async (req, res) => {
   if (!checkBody(req.body, ['email'])) {
-    res.json({ result: false, error: 'Missing or empty fields' });
+    res.status(400).json({ error: 'Missing or empty fields' });
     return;
   }
   try {
     const deletetedUser = await User.deleteOne({ email: req.body.email });
     if (deletetedUser.deletedCount > 0) {
-      return res.json({ result: true, error: 'User deleted' });
+      return res.status(204).json({ error: 'User deleted' });
     } else {
-      return res.json({ result: false, error: 'User not fount' });
+      return res.status(404).json({ error: 'User not found' });
     }
   } catch (error) {
-    return res.json({ result: false, error: 'impossible' });
+    return res.status(500).json({
+      error: 'Cannot delete, internal server error',
+    });
   }
 };
 
