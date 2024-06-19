@@ -42,12 +42,12 @@ const registerUser = async (req, res) => {
       });
     });
   } catch (error) {
-    console.log(error);
     if (error.code === 11000) {
       res.status(400).json({ error: 'Username or email already exist' });
     }
     return res.status(500).json({
-      error: 'Cannot create user, internal server error',
+      message: 'Cannot create user, internal server error',
+      error,
     });
   }
 };
@@ -74,7 +74,8 @@ const signInUser = async (req, res) => {
     return res.status(400).json({ error: 'Wrong password' });
   } catch (error) {
     return res.status(500).json({
-      error: 'Cannot sign in, internal server error',
+      message: 'Cannot sign in, internal server error',
+      error,
     });
   }
 };
@@ -91,6 +92,7 @@ const updateUser = async (req, res) => {
     await User.findOneAndUpdate({ _id: req.body._id }, toUpdate, {
       new: true,
     }).then((updatedUser) => {
+      console.log('IN UPDATE', updatedUser);
       return res.status(200).json({
         user: {
           username: updatedUser.username,
@@ -101,8 +103,10 @@ const updateUser = async (req, res) => {
       });
     });
   } catch (error) {
+    console.log('IN ERROR', error);
     return res.status(500).json({
-      error: 'Cannot update, internal server error',
+      message: 'Cannot update, internal server error',
+      error: error,
     });
   }
 };
@@ -115,13 +119,14 @@ const deleteUser = async (req, res) => {
   try {
     const deletetedUser = await User.deleteOne({ email: req.body.email });
     if (deletetedUser.deletedCount > 0) {
-      return res.status(204).json({ error: 'User deleted' });
+      return res.status(200).json({ message: 'User deleted' });
     } else {
       return res.status(404).json({ error: 'User not found' });
     }
   } catch (error) {
     return res.status(500).json({
-      error: 'Cannot delete, internal server error',
+      message: 'Cannot delete, internal server error',
+      error,
     });
   }
 };

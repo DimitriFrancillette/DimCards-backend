@@ -13,13 +13,16 @@ const saveDeck = async (req, res) => {
     const newDeck = new Deck(req.body);
 
     await newDeck.save().then((newDoc) => {
-      res.json({ result: true, deck: newDoc });
+      return res.status(201).json({ deck: newDoc });
     });
   } catch (error) {
     if (error.code === 11000) {
-      return res.json({ result: false, error: 'Duplicate deck id.' });
+      return res.status(400).json({ error: 'Duplicate deck id.' });
     }
-    return res.json({ result: false, error: 'Cannot save deck.' });
+    return res.status(500).json({
+      message: 'Cannot save deck, internal server error',
+      error,
+    });
   }
 };
 
@@ -36,27 +39,40 @@ const updateDeck = async (req, res) => {
     await Deck.findOneAndUpdate({ id: req.body.id }, toUpdate, {
       new: true,
     }).then((updatedDeck) => {
-      res.json({ result: true, deck: updatedDeck, message: 'Deck updated' });
+      if (!updatedDeck) {
+        return res.status(404).json({ error: 'Deck not found' });
+      }
+      return res.status(200).json({
+        deck: updatedDeck,
+        message: 'Deck updated',
+      });
     });
   } catch (error) {
-    return res.json({
-      result: false,
-      message: 'Impossibme to update',
-      error: error,
+    return res.status(500).json({
+      message: 'Impossible to update',
+      error,
     });
   }
 };
 
 const deleteDeck = async (req, res) => {
   try {
-    const deletetedDeck = await Deck.deleteOne({ id: req.body.id });
-    if (deletetedDeck.deletedCount > 0) {
-      return res.json({ result: true, message: 'Deck deleted' });
-    } else {
-      return res.json({ result: false, error: 'Deck not fount' });
-    }
+    await Deck.deleteOne({ id: req.body.id }).then((deletedDeck) => {
+      console.log(deletedDeck);
+      if (deletedDeck.deletedCount > 0) {
+        console.log('ON PASSE LA');
+        return res.status(200).json({ message: 'Deck deleted' });
+      } else {
+        console.log('ON PASSE 404');
+        return res.status(404).json({ error: 'Deck not found' });
+      }
+    });
   } catch (error) {
-    return res.json({ result: false, error: 'Error. Impossible to delete' });
+    console.log(error);
+    return res.status(500).json({
+      message: 'Cannot delete, internal server error',
+      error,
+    });
   }
 };
 
