@@ -43,7 +43,7 @@ const registerUser = async (req, res) => {
     });
   } catch (error) {
     if (error.code === 11000) {
-      res.status(400).json({ error: 'Username or email already exist' });
+      return res.status(400).json({ error: 'Username or email already exist' });
     }
     return res.status(500).json({
       message: 'Cannot create user, internal server error',
