@@ -6,19 +6,19 @@ const bcrypt = require('bcrypt');
 
 const registerUser = async (req, res) => {
   if (!checkBody(req.body, ['username', 'email', 'password'])) {
-    res.status(400).json({ error: 'Missing or empty fields' });
+    res.status(400).json({ message: 'Missing or empty fields' });
     return;
   }
 
   if (!validator.isEmail(req.body.email)) {
-    res.status(400).json({ error: 'This email is not valid' });
+    res.status(400).json({ message: 'This email is not valid' });
     return;
   }
 
   //can be replace by is "isStrongPassword(str [, options])" later
   if (!validator.isLength(req.body.password, { min: 3, max: 100 })) {
     res.status(400).json({
-      error: 'Password needs to be between 3 and 20 characters',
+      message: 'Password needs to be between 3 and 20 characters',
     });
     return;
   }
@@ -43,7 +43,9 @@ const registerUser = async (req, res) => {
     });
   } catch (error) {
     if (error.code === 11000) {
-      return res.status(400).json({ error: 'Username or email already exist' });
+      return res
+        .status(400)
+        .json({ message: 'Username or email already exist' });
     }
     return res.status(500).json({
       message: 'Cannot create user, internal server error',
@@ -81,18 +83,26 @@ const signInUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const hash = bcrypt.hashSync(req.body.password, 10);
-
+  if (!checkBody(req.body, ['email'])) {
+    res.status(400).json({ error: 'User email is missing' });
+    return;
+  }
   try {
-    const toUpdate = {
-      username: req.body.username,
+    let toUpdate = {
       email: req.body.email,
-      password: hash,
     };
-    await User.findOneAndUpdate({ _id: req.body._id }, toUpdate, {
+
+    if (req.body.username) {
+      toUpdate.username = req.body.username;
+    }
+
+    if (req.body.password) {
+      toUpdate.password = bcrypt.hashSync(req.body.password, 10);
+    }
+
+    await User.findOneAndUpdate({ email: req.body.email }, toUpdate, {
       new: true,
     }).then((updatedUser) => {
-      console.log('IN UPDATE', updatedUser);
       return res.status(200).json({
         user: {
           username: updatedUser.username,
@@ -103,7 +113,6 @@ const updateUser = async (req, res) => {
       });
     });
   } catch (error) {
-    console.log('IN ERROR', error);
     return res.status(500).json({
       message: 'Cannot update, internal server error',
       error: error,
