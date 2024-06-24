@@ -56,14 +56,14 @@ const registerUser = async (req, res) => {
 
 const signInUser = async (req, res) => {
   if (!checkBody(req.body, ['email', 'password'])) {
-    res.status(400).json({ error: 'Missing or empty fields' });
+    res.status(400).json({ message: 'Missing or empty fields' });
     return;
   }
 
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ message: 'User not found' });
     }
 
     if (user && bcrypt.compareSync(req.body.password, user.password)) {
@@ -73,7 +73,7 @@ const signInUser = async (req, res) => {
         token: user.token,
       });
     }
-    return res.status(400).json({ error: 'Wrong password' });
+    return res.status(400).json({ message: 'Wrong password' });
   } catch (error) {
     return res.status(500).json({
       message: 'Cannot sign in, internal server error',
