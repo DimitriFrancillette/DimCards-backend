@@ -4,9 +4,9 @@ const { checkBody } = require('../modules/checkBody');
 
 //*Question: Do I want duplicate deck name for the same user ?
 const saveDeck = async (req, res) => {
-  //todo : When used with the front delete the next line
-  req.body.cards = [{ cardCode: '06RU008', number: 2 }];
-
+  // //todo : When used with the front delete the next line
+  // req.body.cards = [{ cardCode: '06MT006', number: 2, regionRefs: 'Targon' }];
+  console.log(req.body);
   req.body.id = uid2(64);
 
   try {
@@ -28,7 +28,7 @@ const saveDeck = async (req, res) => {
 
 const updateDeck = async (req, res) => {
   //todo : When used with the front delete the next line
-  req.body.cards = [{ cardCode: '06RU008', number: 3 }];
+  req.body.cards = [{ cardCode: '06MT006', number: 3, regionRefs: 'Targon' }];
 
   try {
     const toUpdate = {

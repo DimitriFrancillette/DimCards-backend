@@ -36,6 +36,7 @@ const registerUser = async (req, res) => {
 
     await newUser.save().then((userInfo) => {
       return res.status(201).json({
+        userId: userInfo._id,
         username: userInfo.username,
         email: userInfo.email,
         token: userInfo.token,
@@ -68,6 +69,7 @@ const signInUser = async (req, res) => {
 
     if (user && bcrypt.compareSync(req.body.password, user.password)) {
       return res.status(200).json({
+        userId: user._id,
         username: user.username,
         email: user.email,
         token: user.token,
