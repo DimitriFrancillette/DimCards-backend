@@ -9,7 +9,7 @@ const deckSchema = new mongoose.Schema({
     required: true,
   },
   regions: [String],
-  cards: [{ cardCode: String, number: Number, regionRefs: String }],
+  cards: [{ cardCode: String, number: Number, regionRefs: [String] }],
   public: Boolean,
   created_at: { type: Date, default: Date.now },
 });

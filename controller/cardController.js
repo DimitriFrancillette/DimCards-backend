@@ -34,6 +34,7 @@ const findAllCards = async (req, res) => {
           cost: foundCard.cost,
           type: foundCard.type,
           rarity: foundCard.rarityRef,
+          cardCode: foundCard.cardCode,
           keywords: foundCard.keywords,
         };
         newData.push(newObj);
@@ -53,6 +54,7 @@ const findAllCards = async (req, res) => {
           cost: foundCard.cost,
           type: foundCard.type,
           rarity: foundCard.rarityRef,
+          cardCode: foundCard.cardCode,
           keywords: foundCard.keywords,
         };
         newData.push(newObj);
@@ -72,6 +74,7 @@ const findAllCards = async (req, res) => {
           cost: foundCard.cost,
           type: foundCard.type,
           rarity: foundCard.rarityRef,
+          cardCode: foundCard.cardCode,
           keywords: foundCard.keywords,
         };
         newData.push(newObj);
@@ -91,6 +94,7 @@ const findAllCards = async (req, res) => {
           cost: foundCard.cost,
           type: foundCard.type,
           rarity: foundCard.rarityRef,
+          cardCode: foundCard.cardCode,
           keywords: foundCard.keywords,
         };
         newData.push(newObj);
@@ -110,6 +114,7 @@ const findAllCards = async (req, res) => {
           cost: foundCard.cost,
           type: foundCard.type,
           rarity: foundCard.rarityRef,
+          cardCode: foundCard.cardCode,
           keywords: foundCard.keywords,
         };
         newData.push(newObj);
@@ -129,6 +134,7 @@ const findAllCards = async (req, res) => {
           cost: foundCard.cost,
           type: foundCard.type,
           rarity: foundCard.rarityRef,
+          cardCode: foundCard.cardCode,
           keywords: foundCard.keywords,
         };
         newData.push(newObj);
@@ -148,6 +154,7 @@ const findAllCards = async (req, res) => {
           cost: foundCard.cost,
           type: foundCard.type,
           rarity: foundCard.rarityRef,
+          cardCode: foundCard.cardCode,
           keywords: foundCard.keywords,
         };
         newData.push(newObj);
@@ -167,6 +174,7 @@ const findAllCards = async (req, res) => {
           cost: foundCard.cost,
           type: foundCard.type,
           rarity: foundCard.rarityRef,
+          cardCode: foundCard.cardCode,
           keywords: foundCard.keywords,
         };
         newData.push(newObj);
@@ -186,6 +194,7 @@ const findAllCards = async (req, res) => {
           cost: foundCard.cost,
           type: foundCard.type,
           rarity: foundCard.rarityRef,
+          cardCode: foundCard.cardCode,
           keywords: foundCard.keywords,
         };
         newData.push(newObj);
@@ -205,6 +214,7 @@ const findAllCards = async (req, res) => {
           cost: foundCard.cost,
           type: foundCard.type,
           rarity: foundCard.rarityRef,
+          cardCode: foundCard.cardCode,
           keywords: foundCard.keywords,
         };
         newData.push(newObj);
@@ -224,6 +234,7 @@ const findAllCards = async (req, res) => {
           cost: foundCard.cost,
           type: foundCard.type,
           rarity: foundCard.rarityRef,
+          cardCode: foundCard.cardCode,
           keywords: foundCard.keywords,
         };
         newData.push(newObj);

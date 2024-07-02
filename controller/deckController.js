@@ -2,20 +2,32 @@ const { Deck } = require('../models/deck');
 const uid2 = require('uid2');
 const { checkBody } = require('../modules/checkBody');
 
-//*Question: Do I want duplicate deck name for the same user ?
 const saveDeck = async (req, res) => {
-  // //todo : When used with the front delete the next line
-  // req.body.cards = [{ cardCode: '06MT006', number: 2, regionRefs: 'Targon' }];
-  console.log(req.body);
-  req.body.id = uid2(64);
-
   try {
-    const newDeck = new Deck(req.body);
+    const newCards = [];
+    for (const card of req.body.cards) {
+      const cardToAdd = {
+        cardCode: card.card.cardCode,
+        number: card.number,
+        regionRefs: card.card.regions,
+      };
+      newCards.push(cardToAdd);
+    }
+
+    const newDeck = new Deck({
+      id: uid2(64),
+      name: req.body.name,
+      userId: req.body.userId,
+      regions: req.body.regions,
+      cards: newCards,
+      public: req.body.public,
+    });
 
     await newDeck.save().then((newDoc) => {
       return res.status(201).json({ deck: newDoc });
     });
   } catch (error) {
+    console.log(error);
     if (error.code === 11000) {
       return res.status(400).json({ error: 'Duplicate deck id.' });
     }
@@ -58,14 +70,41 @@ const updateDeck = async (req, res) => {
 const deleteDeck = async (req, res) => {
   try {
     await Deck.deleteOne({ id: req.body.id }).then((deletedDeck) => {
-      console.log(deletedDeck);
       if (deletedDeck.deletedCount > 0) {
-        console.log('ON PASSE LA');
         return res.status(200).json({ message: 'Deck deleted' });
       } else {
-        console.log('ON PASSE 404');
         return res.status(404).json({ error: 'Deck not found' });
       }
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Cannot delete, internal server error',
+      error,
+    });
+  }
+};
+
+const getUserDecks = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    await Deck.find({ userId: userId }).then((data) => {
+      return res.status(200).json({ decks: data });
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: 'Cannot delete, internal server error',
+      error,
+    });
+  }
+};
+
+const getPublicDecks = async (req, res) => {
+  console.log('HERE');
+  try {
+    await Deck.find({ public: true }).then((data) => {
+      console.log(data);
     });
   } catch (error) {
     console.log(error);
@@ -80,4 +119,6 @@ module.exports = {
   saveDeck,
   deleteDeck,
   updateDeck,
+  getUserDecks,
+  getPublicDecks,
 };

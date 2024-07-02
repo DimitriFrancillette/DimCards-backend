@@ -4,11 +4,14 @@ const {
   saveDeck,
   deleteDeck,
   updateDeck,
+  getUserDecks,
+  getPublicDecks,
 } = require('../controller/deckController');
 
-/* route users listing. */
 router.post('/save', saveDeck);
 router.delete('/delete', deleteDeck);
 router.patch('/update', updateDeck);
+router.get('/user/:userId', getUserDecks);
+router.get('/public', getPublicDecks);
 
 module.exports = router;
