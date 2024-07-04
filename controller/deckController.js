@@ -88,9 +88,11 @@ const getUserDecks = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    await Deck.find({ userId: userId }).then((data) => {
-      return res.status(200).json({ decks: data });
-    });
+    await Deck.find({ userId: userId })
+      .populate('userId', 'username')
+      .then((data) => {
+        return res.status(200).json({ decks: data });
+      });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
@@ -101,11 +103,12 @@ const getUserDecks = async (req, res) => {
 };
 
 const getPublicDecks = async (req, res) => {
-  console.log('HERE');
   try {
-    await Deck.find({ public: true }).then((data) => {
-      console.log(data);
-    });
+    await Deck.find({ public: true })
+      .populate('userId', 'username')
+      .then((data) => {
+        res.status(200).json({ decks: data });
+      });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
