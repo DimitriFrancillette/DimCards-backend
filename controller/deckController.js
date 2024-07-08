@@ -96,7 +96,7 @@ const getUserDecks = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({
-      message: 'Cannot delete, internal server error',
+      message: "Cannot get the user's decks, internal server error",
       error,
     });
   }
@@ -112,7 +112,7 @@ const getPublicDecks = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({
-      message: 'Cannot delete, internal server error',
+      message: 'Cannot get the public decks, internal server error',
       error,
     });
   }
